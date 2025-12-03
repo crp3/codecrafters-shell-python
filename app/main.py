@@ -9,7 +9,14 @@ def main():
     """
     main function
     """
-    sys.stdout.write("$ ")
+    while True:
+        sys.stdout.write("$ ")
+        sys.stdout.flush()
+        input_str = sys.stdin.readline()
+        if not input_str:
+            break
+        input_str = input_str.strip()
+        sys.stdout.write(f"{input_str}: command not found\n")
 
 
 if __name__ == "__main__":
