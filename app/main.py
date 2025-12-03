@@ -16,6 +16,8 @@ def main():
         if not input_str:
             break
         input_str = input_str.strip()
+        if input_str == "exit":
+            return
         sys.stdout.write(f"{input_str}: command not found\n")
 
 
