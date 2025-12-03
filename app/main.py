@@ -4,6 +4,7 @@ This is a SHELL challenge
 
 import os
 import stat
+import subprocess
 import sys
 from typing import List, Optional, Tuple
 
@@ -98,7 +99,16 @@ def handle_command(command: str, args: List[str]):
                 raise ArgumentNotFoundException
 
         case _:
-            raise CommandNotFoundException
+            found, path = browse_path(command)
+            full_command = [command] + args
+            if found:
+                result = subprocess.run(
+                    full_command, capture_output=True, text=True, check=True
+                )
+                sys.stdout.write(result.stdout)
+                sys.stdout.write(result.stderr)
+            else:
+                raise CommandNotFoundException
 
 
 def browse_path(local: str) -> Tuple[bool, str]:
