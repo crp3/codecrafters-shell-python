@@ -8,7 +8,7 @@ import subprocess
 import sys
 from typing import List, Optional, Tuple
 
-from exceptions import (
+from .exceptions import (
     ArgumentNotFoundException,
     CommandNotFoundException,
     EmptyCommandException,
