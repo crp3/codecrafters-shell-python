@@ -26,6 +26,16 @@ class CommandNotFoundException(Exception):
         super().__init__(self.message)
 
 
+class ArgumentNotFoundException(Exception):
+    """
+    Exception for when an argument is not found when looked up
+    """
+
+    def __init__(self, message="argument not found"):
+        self.message = message
+        super().__init__(self.message)
+
+
 class ExitException(Exception):
     """
     Exception for when a user types "exit"
@@ -45,29 +55,40 @@ def main():
         sys.stdout.flush()
         input_str = sys.stdin.readline()
         cmd = ""
+        args = []
         try:
             cmd, args = parse_command(input_str)
-            handle_command(cmd, args)
         except EmptyCommandException:
             break
+
+        try:
+            handle_command(cmd, args)
         except CommandNotFoundException:
             sys.stdout.write(f"{cmd}: command not found\n")
+        except ArgumentNotFoundException:
+            sys.stdout.write(f"{args[0]}: not found\n")
         except ExitException:
             return
 
 
-def handle_command(command: str, args: List[str]) -> bool:
+def handle_command(command: str, args: List[str]):
     """
     Handles a command pattern,
     returning a bool indicating whether it should break the main loop
     """
+    valid_commands = ["exit", "echo", "type"]
 
     match command:
         case "exit":
             raise ExitException
         case "echo":
             sys.stdout.write(" ".join(args) + "\n")
-            return False
+        case "type":
+            local_cmd = args[0]
+            if local_cmd not in valid_commands:
+                raise ArgumentNotFoundException
+            sys.stdout.write(f"{local_cmd} is a shell builtin\n")
+
         case _:
             raise CommandNotFoundException
 
