@@ -3,6 +3,37 @@ This is a SHELL challenge
 """
 
 import sys
+from typing import List, Optional, Tuple
+
+
+class EmptyCommandException(Exception):
+    """
+    Exception for when a command is empty
+    """
+
+    def __init__(self, message="Empty command was given as input"):
+        self.message = message
+        super().__init__(self.message)
+
+
+class CommandNotFoundException(Exception):
+    """
+    Exception for when a command is not found
+    """
+
+    def __init__(self, message="command not found"):
+        self.message = message
+        super().__init__(self.message)
+
+
+class ExitException(Exception):
+    """
+    Exception for when a user types "exit"
+    """
+
+    def __init__(self, message="exit"):
+        self.message = message
+        super().__init__(self.message)
 
 
 def main():
@@ -13,12 +44,45 @@ def main():
         sys.stdout.write("$ ")
         sys.stdout.flush()
         input_str = sys.stdin.readline()
-        if not input_str:
+        cmd = ""
+        try:
+            cmd, args = parse_command(input_str)
+            handle_command(cmd, args)
+        except EmptyCommandException:
             break
-        input_str = input_str.strip()
-        if input_str == "exit":
+        except CommandNotFoundException:
+            sys.stdout.write(f"{cmd}: command not found\n")
+        except ExitException:
             return
-        sys.stdout.write(f"{input_str}: command not found\n")
+
+
+def handle_command(command: str, args: List[str]) -> bool:
+    """
+    Handles a command pattern,
+    returning a bool indicating whether it should break the main loop
+    """
+
+    match command:
+        case "exit":
+            raise ExitException
+        case "echo":
+            sys.stdout.write(" ".join(args) + "\n")
+            return False
+        case _:
+            raise CommandNotFoundException
+
+
+def parse_command(input_str: Optional[str]) -> Tuple[str, List[str]]:
+    """
+    parse a command
+    """
+    if not input_str:
+        raise EmptyCommandException
+
+    split_command = input_str.split()
+    cmd = split_command[0]
+    args = split_command[1:]
+    return cmd, args
 
 
 if __name__ == "__main__":
