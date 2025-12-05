@@ -55,6 +55,13 @@ def handle_command(command: str, args: List[str]):
             sys.stdout.write(" ".join(args) + "\n")
         case "pwd":
             sys.stdout.write(os.getcwd() + "\n")
+        case "cd":
+            path = args[0]
+            try:
+                os.chdir(path)
+            except FileNotFoundError:
+                sys.stdout.write(f"cd: {path}: No such file or directory\n")
+
         case "type":
             local = args[0]
             if local in valid_commands:
