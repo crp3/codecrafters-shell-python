@@ -46,13 +46,15 @@ def handle_command(command: str, args: List[str]):
     Handles a command pattern,
     returning a bool indicating whether it should break the main loop
     """
-    valid_commands = ["exit", "echo", "type"]
+    valid_commands = ["exit", "echo", "type", "pwd"]
 
     match command:
         case "exit":
             raise ExitException
         case "echo":
             sys.stdout.write(" ".join(args) + "\n")
+        case "pwd":
+            sys.stdout.write(os.getcwd() + "\n")
         case "type":
             local = args[0]
             if local in valid_commands:
