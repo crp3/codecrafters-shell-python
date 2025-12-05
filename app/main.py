@@ -58,6 +58,8 @@ def handle_command(command: str, args: List[str]):
         case "cd":
             path = args[0]
             try:
+                if path == "~":
+                    path = os.environ["HOME"]
                 os.chdir(path)
             except FileNotFoundError:
                 sys.stdout.write(f"cd: {path}: No such file or directory\n")
